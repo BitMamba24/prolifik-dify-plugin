@@ -1,0 +1,189 @@
+identity:
+  name: create_clips
+  author: prolifik
+  label:
+    en_US: Create Clips
+description:
+  human:
+    en_US: Cuts a long YouTube, Twitch or Kick video into captioned vertical clips.
+  llm: >-
+    Queues a Prolifik AI Clipper job that finds the best moments in one long YouTube, Twitch or Kick video
+    and renders them as captioned vertical clips. Returns a job_id right away; clipping takes several minutes
+    depending on the video's length. Call Get Clip Job with the job_id until status is completed or failed.
+    Uses clip minutes from the user's plan (the source video's length).
+parameters:
+  - name: video_url
+    type: string
+    required: true
+    form: llm
+    label:
+      en_US: Video URL
+    human_description:
+      en_US: A link to one YouTube, Twitch or Kick video. Channels, playlists and live streams are not supported.
+    llm_description: A link to one YouTube, Twitch or Kick video (not a channel, playlist or live stream).
+  - name: clip_count
+    type: number
+    required: false
+    default: 3
+    min: 1
+    max: 20
+    form: llm
+    label:
+      en_US: Number of Clips
+    human_description:
+      en_US: How many clips to make, from 1 to 20.
+    llm_description: How many clips to make, from 1 to 20. Defaults to 3.
+  - name: clip_length
+    type: select
+    required: false
+    form: llm
+    label:
+      en_US: Clip Length
+    human_description:
+      en_US: Defaults to 30 to 90 seconds.
+    llm_description: One of 10-30, 30-60, 60-90, 90-180 or 180-300 seconds. Defaults to 30-90.
+    options:
+      - value: 10-30
+        label:
+          en_US: Under 30 seconds
+      - value: 30-60
+        label:
+          en_US: 30 to 60 seconds
+      - value: 60-90
+        label:
+          en_US: 60 to 90 seconds
+      - value: 90-180
+        label:
+          en_US: 90 seconds to 3 minutes
+      - value: 180-300
+        label:
+          en_US: 3 to 5 minutes
+  - name: video_type
+    type: select
+    required: false
+    form: llm
+    label:
+      en_US: Video Type
+    human_description:
+      en_US: Tells the AI what kind of moments to pick. Defaults to General.
+    llm_description: >-
+      generic, podcast (interviews), reaction (a streamer reacting), casino (slots stream) or broadcast
+      (sports with no reaction cam). Defaults to generic.
+    options:
+      - value: generic
+        label:
+          en_US: General
+      - value: podcast
+        label:
+          en_US: Podcast or interview
+      - value: reaction
+        label:
+          en_US: Stream reaction
+      - value: casino
+        label:
+          en_US: Casino stream
+      - value: broadcast
+        label:
+          en_US: Sports broadcast (no reaction cam)
+  - name: language
+    type: string
+    required: false
+    form: llm
+    label:
+      en_US: Spoken Language
+    human_description:
+      en_US: The language spoken in the video as a two-letter code, such as en or es. Leave empty to detect it.
+    llm_description: Two-letter code of the spoken language, such as en, es or de. Leave empty to auto-detect.
+  - name: caption_style
+    type: select
+    required: false
+    form: llm
+    label:
+      en_US: Caption Style
+    human_description:
+      en_US: Defaults to Classic.
+    llm_description: classic, karaoke, bold, minimal, neon or none. Defaults to classic.
+    options:
+      - value: classic
+        label:
+          en_US: "Classic: white caps, yellow highlight"
+      - value: karaoke
+        label:
+          en_US: "Karaoke: words light up as spoken"
+      - value: bold
+        label:
+          en_US: "Bold: big and centered"
+      - value: minimal
+        label:
+          en_US: "Minimal: small and clean"
+      - value: neon
+        label:
+          en_US: "Neon: cyan glow"
+      - value: none
+        label:
+          en_US: No captions
+  - name: layout
+    type: select
+    required: false
+    form: llm
+    label:
+      en_US: Layout
+    human_description:
+      en_US: How the video fits a vertical frame. Defaults to Blur fill.
+    llm_description: blur (keeps the whole frame), crop (center crop) or smart (follows the speaker). Defaults to blur.
+    options:
+      - value: blur
+        label:
+          en_US: "Blur fill: keeps the whole frame"
+      - value: crop
+        label:
+          en_US: "Center crop: zooms into the middle"
+      - value: smart
+        label:
+          en_US: "Smart reframe: follows the speaker"
+  - name: aspect_ratio
+    type: select
+    required: false
+    form: llm
+    label:
+      en_US: Aspect Ratio
+    human_description:
+      en_US: Defaults to 9:16 vertical.
+    llm_description: 9:16, 1:1, 4:5 or 16:9. Defaults to 9:16.
+    options:
+      - value: "9:16"
+        label:
+          en_US: 9:16 vertical (TikTok, Reels, Shorts)
+      - value: "1:1"
+        label:
+          en_US: 1:1 square
+      - value: "4:5"
+        label:
+          en_US: 4:5 portrait
+      - value: "16:9"
+        label:
+          en_US: 16:9 landscape
+  - name: instructions
+    type: string
+    required: false
+    form: llm
+    label:
+      en_US: Instructions
+    human_description:
+      en_US: Tell the AI which moments to look for, for example "only the product demo parts". Up to 2,000 characters.
+    llm_description: Optional guidance on which moments to clip, up to 2,000 characters.
+output_schema:
+  type: object
+  properties:
+    job_id:
+      type: string
+      description: ID of the clip job, for Get Clip Job
+    status:
+      type: string
+      description: Job status, queued at first
+    video_url:
+      type: string
+      description: The source video link
+extra:
+  python:
+    source: tools/create_clips.py

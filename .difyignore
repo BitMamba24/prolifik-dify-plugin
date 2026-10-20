@@ -1,0 +1,37 @@
+# Kept out of the .difypkg: the Marketplace takes runtime files only.
+# tests/test_package.py checks the built package against this list.
+
+# Development and release docs
+PUBLISHING.md
+tests/
+scripts/
+pytest.ini
+
+# Python state
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+dist/
+*.egg-info/
+
+# Secrets and local settings
+.env
+.env.*
+
+# Editors and OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# VCS
+.git/
+.gitignore
+.github/
+
+# Built packages
+*.difypkg

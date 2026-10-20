@@ -1,0 +1,27 @@
+identity:
+  name: list_brands
+  author: prolifik
+  label:
+    en_US: List Brands
+description:
+  human:
+    en_US: Lists the brands in your Prolifik account and shows which one is active.
+  llm: >-
+    Lists the brands in the user's Prolifik account with their IDs. Use it to find the brand_id for
+    Create Videos or List Videos when the user names a brand. Brands with usable_on_plan false are locked
+    on the current plan and every create refuses them.
+parameters: []
+output_schema:
+  type: object
+  properties:
+    active_brand_id:
+      type: string
+      description: ID of the brand the account is working in, used when a tool gets no brand_id
+    brands:
+      type: array
+      description: Brands with id, name, website_url, description, is_active_brand and usable_on_plan
+      items:
+        type: object
+extra:
+  python:
+    source: tools/list_brands.py

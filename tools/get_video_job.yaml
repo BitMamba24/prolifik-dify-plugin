@@ -1,0 +1,48 @@
+identity:
+  name: get_video_job
+  author: prolifik
+  label:
+    en_US: Get Video Job
+description:
+  human:
+    en_US: Gets a video job's status and the videos it has made so far, with download links.
+  llm: >-
+    Gets the status of a video job from Create Videos and its videos. Status moves queued, generating, then
+    ready_for_review, completed or partially_failed (or canceled). Each video has a video_url once its own
+    status is ready; carousels have slide_urls instead. Download links expire after about an hour, so fetch
+    them again rather than storing them. Call again every 30 to 60 seconds while the job is still running.
+parameters:
+  - name: job_id
+    type: string
+    required: true
+    form: llm
+    label:
+      en_US: Video Job ID
+    human_description:
+      en_US: The job ID returned by Create Videos.
+    llm_description: The job_id returned by Create Videos.
+output_schema:
+  type: object
+  properties:
+    job_id:
+      type: string
+      description: ID of the video job
+    status:
+      type: string
+      description: queued, generating, ready_for_review, completed, partially_failed or canceled
+    is_finished:
+      type: boolean
+      description: True once the job will make no more videos
+    video_urls:
+      type: array
+      description: Download links of the videos that are ready, valid for about an hour
+      items:
+        type: string
+    videos:
+      type: array
+      description: Every video in the job with status, format, text and links
+      items:
+        type: object
+extra:
+  python:
+    source: tools/get_video_job.py

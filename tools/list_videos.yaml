@@ -1,0 +1,112 @@
+identity:
+  name: list_videos
+  author: prolifik
+  label:
+    en_US: List Videos
+description:
+  human:
+    en_US: Lists the videos in your Prolifik account, newest first.
+  llm: >-
+    Lists videos (content pieces) in the user's Prolifik account, newest first, with download links for the
+    ready ones. Filter by brand, format and status. When has_more is true, pass next_cursor as before to get
+    the next page.
+parameters:
+  - name: brand_id
+    type: string
+    required: false
+    form: llm
+    label:
+      en_US: Brand ID
+    human_description:
+      en_US: Only videos of this brand. Leave empty for every brand.
+    llm_description: ID of a brand from List Brands, to list only its videos. Leave empty for all brands.
+  - name: format
+    type: select
+    required: false
+    form: llm
+    label:
+      en_US: Format
+    human_description:
+      en_US: Only videos in this format. Leave empty for every format.
+    llm_description: >-
+      Optional format filter: carousel, kinetic-type, scene-swap, b-roll, caption-card or talking-head.
+    options:
+      - value: kinetic-type
+        label:
+          en_US: Text Story
+      - value: caption-card
+        label:
+          en_US: Caption Meme
+      - value: scene-swap
+        label:
+          en_US: Meme Reaction
+      - value: b-roll
+        label:
+          en_US: Clip Montage
+      - value: carousel
+        label:
+          en_US: Image Carousel
+      - value: talking-head
+        label:
+          en_US: Video Hook & Demo
+  - name: status
+    type: select
+    required: false
+    default: ready
+    form: llm
+    label:
+      en_US: Status
+    human_description:
+      en_US: Ready videos by default. Pick All to include ones still rendering or failed.
+    llm_description: ready (default), failed, pending, or all for no status filter.
+    options:
+      - value: ready
+        label:
+          en_US: Ready
+      - value: failed
+        label:
+          en_US: Failed
+      - value: pending
+        label:
+          en_US: Pending
+      - value: all
+        label:
+          en_US: All
+  - name: limit
+    type: number
+    required: false
+    default: 20
+    min: 1
+    max: 100
+    form: llm
+    label:
+      en_US: Limit
+    human_description:
+      en_US: How many videos to return, from 1 to 100.
+    llm_description: How many videos to return, from 1 to 100. Defaults to 20.
+  - name: before
+    type: string
+    required: false
+    form: llm
+    label:
+      en_US: Page Cursor
+    human_description:
+      en_US: The next_cursor from a previous page, to get the page after it.
+    llm_description: The next_cursor value from a previous List Videos result, for the next page.
+output_schema:
+  type: object
+  properties:
+    videos:
+      type: array
+      description: Videos with id, job_id, format, status, video_url, slide_urls and text
+      items:
+        type: object
+    has_more:
+      type: boolean
+      description: True when another page exists
+    next_cursor:
+      type: string
+      description: Pass as Page Cursor to get the next page
+extra:
+  python:
+    source: tools/list_videos.py

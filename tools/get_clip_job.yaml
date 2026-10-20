@@ -1,0 +1,50 @@
+identity:
+  name: get_clip_job
+  author: prolifik
+  label:
+    en_US: Get Clip Job
+description:
+  human:
+    en_US: Gets a clip job's progress and, once it finishes, its clips with download links.
+  llm: >-
+    Gets a clip job from Create Clips. Status moves queued, downloading, transcribing, selecting, producing,
+    then completed, failed or cancelled. When completed, clips lists each clip with title, hook, hashtags,
+    duration, virality_score and a video_url valid for 7 days. Call again every minute or two while it runs.
+parameters:
+  - name: job_id
+    type: string
+    required: true
+    form: llm
+    label:
+      en_US: Clip Job ID
+    human_description:
+      en_US: The job ID returned by Create Clips.
+    llm_description: The job_id returned by Create Clips.
+output_schema:
+  type: object
+  properties:
+    job_id:
+      type: string
+      description: ID of the clip job
+    status:
+      type: string
+      description: queued, downloading, transcribing, selecting, producing, completed, failed or cancelled
+    is_finished:
+      type: boolean
+      description: True once the job is completed, failed or cancelled
+    clip_urls:
+      type: array
+      description: Download links of the finished clips, valid for 7 days
+      items:
+        type: string
+    clips:
+      type: array
+      description: Clips with title, hook, description, hashtags, duration, virality_score and links
+      items:
+        type: object
+    error:
+      type: string
+      description: Why the job failed, if it did
+extra:
+  python:
+    source: tools/get_clip_job.py

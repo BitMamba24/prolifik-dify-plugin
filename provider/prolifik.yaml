@@ -1,0 +1,38 @@
+identity:
+  author: prolifik
+  name: prolifik
+  label:
+    en_US: Prolifik
+  description:
+    en_US: Turn long videos into captioned vertical clips and make branded short-form videos with Prolifik.
+  icon: icon.png
+  tags:
+    - videos
+    - social
+    - productivity
+
+credentials_for_provider:
+  api_key:
+    type: secret-input
+    required: true
+    label:
+      en_US: API Key
+    placeholder:
+      en_US: plk_live_...
+    help:
+      en_US: >-
+        Create a key in Prolifik under Settings > Developer API with the content:read, content:write,
+        clipper:read and clipper:write scopes. API keys come with a paid Prolifik plan.
+    url: https://app.getprolifik.com/home?settings=developer
+
+tools:
+  - tools/list_brands.yaml
+  - tools/create_videos.yaml
+  - tools/get_video_job.yaml
+  - tools/list_videos.yaml
+  - tools/create_clips.yaml
+  - tools/get_clip_job.yaml
+
+extra:
+  python:
+    source: provider/prolifik.py

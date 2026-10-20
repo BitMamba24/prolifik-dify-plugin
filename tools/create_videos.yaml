@@ -1,0 +1,144 @@
+identity:
+  name: create_videos
+  author: prolifik
+  label:
+    en_US: Create Videos
+description:
+  human:
+    en_US: Queues a batch of branded short-form videos, written from your brand, a web page or your own text.
+  llm: >-
+    Queues a batch of branded short-form videos in Prolifik and returns a job_id right away. Rendering takes
+    a few minutes: call Get Video Job with the job_id until status is ready_for_review, completed or
+    partially_failed to get the video URLs. Give source_url to write the videos from a web page (a blog post,
+    product page or changelog), or texts to use your own words. Each video uses one render from the plan's
+    monthly budget.
+parameters:
+  - name: format
+    type: select
+    required: true
+    form: llm
+    label:
+      en_US: Format
+    human_description:
+      en_US: The kind of video to make.
+    llm_description: >-
+      One of: carousel (Image Carousel), kinetic-type (Text Story), scene-swap (Meme Reaction),
+      b-roll (Clip Montage), caption-card (Caption Meme).
+    options:
+      - value: kinetic-type
+        label:
+          en_US: Text Story
+      - value: caption-card
+        label:
+          en_US: Caption Meme
+      - value: scene-swap
+        label:
+          en_US: Meme Reaction
+      - value: b-roll
+        label:
+          en_US: Clip Montage
+      - value: carousel
+        label:
+          en_US: Image Carousel
+  - name: count
+    type: number
+    required: false
+    default: 1
+    min: 1
+    max: 50
+    form: llm
+    label:
+      en_US: Number of Videos
+    human_description:
+      en_US: From 1 to 50. Each video uses one render from your monthly budget.
+    llm_description: How many videos to make, from 1 to 50. Defaults to 1.
+  - name: brand_id
+    type: string
+    required: false
+    form: llm
+    label:
+      en_US: Brand ID
+    human_description:
+      en_US: The brand the videos are for. Leave empty to use the brand active in your Prolifik account.
+    llm_description: >-
+      ID of the brand from List Brands. Leave empty to use the account's active brand.
+  - name: source_url
+    type: string
+    required: false
+    form: llm
+    label:
+      en_US: Source Page URL
+    human_description:
+      en_US: >-
+        A public web page to write the videos from. Prolifik reads it first, which takes about a minute.
+    llm_description: >-
+      A public web page (blog post, product page, changelog) to base the videos on. The tool waits up to
+      90 seconds for Prolifik to read it. If it is still reading, the tool fails with a message to run it
+      again with the same inputs, which reuses the same page.
+  - name: content_source_id
+    type: string
+    required: false
+    form: llm
+    label:
+      en_US: Content Source ID
+    human_description:
+      en_US: A content source already added to the brand in Prolifik. Use this or Source Page URL, not both.
+    llm_description: ID of a ready content source on the brand. Do not combine with source_url.
+  - name: texts
+    type: string
+    required: false
+    form: llm
+    label:
+      en_US: Your Own Text
+    human_description:
+      en_US: >-
+        Optional wording used exactly as written, one line per video. An empty line lets the AI write that
+        video. For Image Carousel, separate the slides on a line with |.
+    llm_description: >-
+      Exact copy to use instead of AI-written text, one line per video in order. An empty line lets the AI
+      write that video. For carousel, separate slides within a line with |. Leave empty to let the AI write
+      everything.
+  - name: include_logo
+    type: boolean
+    required: false
+    default: false
+    form: form
+    label:
+      en_US: Add Brand Logo
+    human_description:
+      en_US: Put the brand's logo on each video.
+    llm_description: Whether to put the brand logo on each video.
+  - name: mention_brand
+    type: boolean
+    required: false
+    default: true
+    form: form
+    label:
+      en_US: Mention the Brand
+    human_description:
+      en_US: Let the AI name the brand in the text.
+    llm_description: Whether the AI may name the brand in the text.
+output_schema:
+  type: object
+  properties:
+    job_id:
+      type: string
+      description: ID of the video job, for Get Video Job
+    status:
+      type: string
+      description: Job status, queued at first
+    brand_id:
+      type: string
+      description: Brand the videos are for
+    content_source_id:
+      type: string
+      description: Content source the videos are written from, if any
+    requested_videos:
+      type: number
+      description: How many videos were requested
+    notice:
+      type: string
+      description: A note from Prolifik about the job, if any
+extra:
+  python:
+    source: tools/create_videos.py
